@@ -26,10 +26,10 @@ service ExtractorService{
     string ping(1: string input),
     
     // service endpoint
-    string extract_string(1: string html_string)
+    string extract_string(1: string html_string, 2: ExtractorType etype)
         throws (1: ExtractorException e),
     
-    // service endpoint   
-    string extract_binary(1: binary html_data, 2: string encoding)
+    // service endpoint 
+    string extract_binary(1: binary html_data, 2: string encoding, 3: ExtractorType etype)
         throws (1: ExtractorException e),
 }

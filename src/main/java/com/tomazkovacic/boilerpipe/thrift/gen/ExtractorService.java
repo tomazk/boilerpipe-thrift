@@ -32,9 +32,9 @@ public class ExtractorService {
 
     public String ping(String input) throws TException;
 
-    public String extract_string(String html_string) throws ExtractorException, TException;
+    public String extract_string(String html_string, ExtractorType etype) throws ExtractorException, TException;
 
-    public String extract_binary(ByteBuffer html_data, String encoding) throws ExtractorException, TException;
+    public String extract_binary(ByteBuffer html_data, String encoding, ExtractorType etype) throws ExtractorException, TException;
 
   }
 
@@ -42,9 +42,9 @@ public class ExtractorService {
 
     public void ping(String input, AsyncMethodCallback<AsyncClient.ping_call> resultHandler) throws TException;
 
-    public void extract_string(String html_string, AsyncMethodCallback<AsyncClient.extract_string_call> resultHandler) throws TException;
+    public void extract_string(String html_string, ExtractorType etype, AsyncMethodCallback<AsyncClient.extract_string_call> resultHandler) throws TException;
 
-    public void extract_binary(ByteBuffer html_data, String encoding, AsyncMethodCallback<AsyncClient.extract_binary_call> resultHandler) throws TException;
+    public void extract_binary(ByteBuffer html_data, String encoding, ExtractorType etype, AsyncMethodCallback<AsyncClient.extract_binary_call> resultHandler) throws TException;
 
   }
 
@@ -121,17 +121,18 @@ public class ExtractorService {
       throw new TApplicationException(TApplicationException.MISSING_RESULT, "ping failed: unknown result");
     }
 
-    public String extract_string(String html_string) throws ExtractorException, TException
+    public String extract_string(String html_string, ExtractorType etype) throws ExtractorException, TException
     {
-      send_extract_string(html_string);
+      send_extract_string(html_string, etype);
       return recv_extract_string();
     }
 
-    public void send_extract_string(String html_string) throws TException
+    public void send_extract_string(String html_string, ExtractorType etype) throws TException
     {
       oprot_.writeMessageBegin(new TMessage("extract_string", TMessageType.CALL, ++seqid_));
       extract_string_args args = new extract_string_args();
       args.setHtml_string(html_string);
+      args.setEtype(etype);
       args.write(oprot_);
       oprot_.writeMessageEnd();
       oprot_.getTransport().flush();
@@ -160,18 +161,19 @@ public class ExtractorService {
       throw new TApplicationException(TApplicationException.MISSING_RESULT, "extract_string failed: unknown result");
     }
 
-    public String extract_binary(ByteBuffer html_data, String encoding) throws ExtractorException, TException
+    public String extract_binary(ByteBuffer html_data, String encoding, ExtractorType etype) throws ExtractorException, TException
     {
-      send_extract_binary(html_data, encoding);
+      send_extract_binary(html_data, encoding, etype);
       return recv_extract_binary();
     }
 
-    public void send_extract_binary(ByteBuffer html_data, String encoding) throws TException
+    public void send_extract_binary(ByteBuffer html_data, String encoding, ExtractorType etype) throws TException
     {
       oprot_.writeMessageBegin(new TMessage("extract_binary", TMessageType.CALL, ++seqid_));
       extract_binary_args args = new extract_binary_args();
       args.setHtml_data(html_data);
       args.setEncoding(encoding);
+      args.setEtype(etype);
       args.write(oprot_);
       oprot_.writeMessageEnd();
       oprot_.getTransport().flush();
@@ -249,23 +251,26 @@ public class ExtractorService {
       }
     }
 
-    public void extract_string(String html_string, AsyncMethodCallback<extract_string_call> resultHandler) throws TException {
+    public void extract_string(String html_string, ExtractorType etype, AsyncMethodCallback<extract_string_call> resultHandler) throws TException {
       checkReady();
-      extract_string_call method_call = new extract_string_call(html_string, resultHandler, this, protocolFactory, transport);
+      extract_string_call method_call = new extract_string_call(html_string, etype, resultHandler, this, protocolFactory, transport);
       manager.call(method_call);
     }
 
     public static class extract_string_call extends TAsyncMethodCall {
       private String html_string;
-      public extract_string_call(String html_string, AsyncMethodCallback<extract_string_call> resultHandler, TAsyncClient client, TProtocolFactory protocolFactory, TNonblockingTransport transport) throws TException {
+      private ExtractorType etype;
+      public extract_string_call(String html_string, ExtractorType etype, AsyncMethodCallback<extract_string_call> resultHandler, TAsyncClient client, TProtocolFactory protocolFactory, TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.html_string = html_string;
+        this.etype = etype;
       }
 
       public void write_args(TProtocol prot) throws TException {
         prot.writeMessageBegin(new TMessage("extract_string", TMessageType.CALL, 0));
         extract_string_args args = new extract_string_args();
         args.setHtml_string(html_string);
+        args.setEtype(etype);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -280,19 +285,21 @@ public class ExtractorService {
       }
     }
 
-    public void extract_binary(ByteBuffer html_data, String encoding, AsyncMethodCallback<extract_binary_call> resultHandler) throws TException {
+    public void extract_binary(ByteBuffer html_data, String encoding, ExtractorType etype, AsyncMethodCallback<extract_binary_call> resultHandler) throws TException {
       checkReady();
-      extract_binary_call method_call = new extract_binary_call(html_data, encoding, resultHandler, this, protocolFactory, transport);
+      extract_binary_call method_call = new extract_binary_call(html_data, encoding, etype, resultHandler, this, protocolFactory, transport);
       manager.call(method_call);
     }
 
     public static class extract_binary_call extends TAsyncMethodCall {
       private ByteBuffer html_data;
       private String encoding;
-      public extract_binary_call(ByteBuffer html_data, String encoding, AsyncMethodCallback<extract_binary_call> resultHandler, TAsyncClient client, TProtocolFactory protocolFactory, TNonblockingTransport transport) throws TException {
+      private ExtractorType etype;
+      public extract_binary_call(ByteBuffer html_data, String encoding, ExtractorType etype, AsyncMethodCallback<extract_binary_call> resultHandler, TAsyncClient client, TProtocolFactory protocolFactory, TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.html_data = html_data;
         this.encoding = encoding;
+        this.etype = etype;
       }
 
       public void write_args(TProtocol prot) throws TException {
@@ -300,6 +307,7 @@ public class ExtractorService {
         extract_binary_args args = new extract_binary_args();
         args.setHtml_data(html_data);
         args.setEncoding(encoding);
+        args.setEtype(etype);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -395,7 +403,7 @@ public class ExtractorService {
         iprot.readMessageEnd();
         extract_string_result result = new extract_string_result();
         try {
-          result.success = iface_.extract_string(args.html_string);
+          result.success = iface_.extract_string(args.html_string, args.etype);
         } catch (ExtractorException e) {
           result.e = e;
         } catch (Throwable th) {
@@ -433,7 +441,7 @@ public class ExtractorService {
         iprot.readMessageEnd();
         extract_binary_result result = new extract_binary_result();
         try {
-          result.success = iface_.extract_binary(args.html_data, args.encoding);
+          result.success = iface_.extract_binary(args.html_data, args.encoding, args.etype);
         } catch (ExtractorException e) {
           result.e = e;
         } catch (Throwable th) {
@@ -1014,12 +1022,19 @@ public class ExtractorService {
     private static final TStruct STRUCT_DESC = new TStruct("extract_string_args");
 
     private static final TField HTML_STRING_FIELD_DESC = new TField("html_string", TType.STRING, (short)1);
+    private static final TField ETYPE_FIELD_DESC = new TField("etype", TType.I32, (short)2);
 
     private String html_string;
+    private ExtractorType etype;
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements TFieldIdEnum {
-      HTML_STRING((short)1, "html_string");
+      HTML_STRING((short)1, "html_string"),
+      /**
+       * 
+       * @see ExtractorType
+       */
+      ETYPE((short)2, "etype");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1036,6 +1051,8 @@ public class ExtractorService {
         switch(fieldId) {
           case 1: // HTML_STRING
             return HTML_STRING;
+          case 2: // ETYPE
+            return ETYPE;
           default:
             return null;
         }
@@ -1082,6 +1099,8 @@ public class ExtractorService {
       Map<_Fields, FieldMetaData> tmpMap = new EnumMap<_Fields, FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.HTML_STRING, new FieldMetaData("html_string", TFieldRequirementType.DEFAULT, 
           new FieldValueMetaData(TType.STRING)));
+      tmpMap.put(_Fields.ETYPE, new FieldMetaData("etype", TFieldRequirementType.DEFAULT, 
+          new EnumMetaData(TType.ENUM, ExtractorType.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       FieldMetaData.addStructMetaDataMap(extract_string_args.class, metaDataMap);
     }
@@ -1090,10 +1109,12 @@ public class ExtractorService {
     }
 
     public extract_string_args(
-      String html_string)
+      String html_string,
+      ExtractorType etype)
     {
       this();
       this.html_string = html_string;
+      this.etype = etype;
     }
 
     /**
@@ -1102,6 +1123,9 @@ public class ExtractorService {
     public extract_string_args(extract_string_args other) {
       if (other.isSetHtml_string()) {
         this.html_string = other.html_string;
+      }
+      if (other.isSetEtype()) {
+        this.etype = other.etype;
       }
     }
 
@@ -1112,6 +1136,7 @@ public class ExtractorService {
     @Override
     public void clear() {
       this.html_string = null;
+      this.etype = null;
     }
 
     public String getHtml_string() {
@@ -1137,6 +1162,37 @@ public class ExtractorService {
       }
     }
 
+    /**
+     * 
+     * @see ExtractorType
+     */
+    public ExtractorType getEtype() {
+      return this.etype;
+    }
+
+    /**
+     * 
+     * @see ExtractorType
+     */
+    public void setEtype(ExtractorType etype) {
+      this.etype = etype;
+    }
+
+    public void unsetEtype() {
+      this.etype = null;
+    }
+
+    /** Returns true if field etype is set (has been asigned a value) and false otherwise */
+    public boolean isSetEtype() {
+      return this.etype != null;
+    }
+
+    public void setEtypeIsSet(boolean value) {
+      if (!value) {
+        this.etype = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case HTML_STRING:
@@ -1147,6 +1203,14 @@ public class ExtractorService {
         }
         break;
 
+      case ETYPE:
+        if (value == null) {
+          unsetEtype();
+        } else {
+          setEtype((ExtractorType)value);
+        }
+        break;
+
       }
     }
 
@@ -1154,6 +1218,9 @@ public class ExtractorService {
       switch (field) {
       case HTML_STRING:
         return getHtml_string();
+
+      case ETYPE:
+        return getEtype();
 
       }
       throw new IllegalStateException();
@@ -1168,6 +1235,8 @@ public class ExtractorService {
       switch (field) {
       case HTML_STRING:
         return isSetHtml_string();
+      case ETYPE:
+        return isSetEtype();
       }
       throw new IllegalStateException();
     }
@@ -1191,6 +1260,15 @@ public class ExtractorService {
         if (!(this_present_html_string && that_present_html_string))
           return false;
         if (!this.html_string.equals(that.html_string))
+          return false;
+      }
+
+      boolean this_present_etype = true && this.isSetEtype();
+      boolean that_present_etype = true && that.isSetEtype();
+      if (this_present_etype || that_present_etype) {
+        if (!(this_present_etype && that_present_etype))
+          return false;
+        if (!this.etype.equals(that.etype))
           return false;
       }
 
@@ -1220,6 +1298,16 @@ public class ExtractorService {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetEtype()).compareTo(typedOther.isSetEtype());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetEtype()) {
+        lastComparison = TBaseHelper.compareTo(this.etype, typedOther.etype);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1244,6 +1332,13 @@ public class ExtractorService {
               TProtocolUtil.skip(iprot, field.type);
             }
             break;
+          case 2: // ETYPE
+            if (field.type == TType.I32) {
+              this.etype = ExtractorType.findByValue(iprot.readI32());
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
           default:
             TProtocolUtil.skip(iprot, field.type);
         }
@@ -1262,6 +1357,11 @@ public class ExtractorService {
         oprot.writeString(this.html_string);
         oprot.writeFieldEnd();
       }
+      if (this.etype != null) {
+        oprot.writeFieldBegin(ETYPE_FIELD_DESC);
+        oprot.writeI32(this.etype.getValue());
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -1276,6 +1376,14 @@ public class ExtractorService {
         sb.append("null");
       } else {
         sb.append(this.html_string);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("etype:");
+      if (this.etype == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.etype);
       }
       first = false;
       sb.append(")");
@@ -1658,14 +1766,21 @@ public class ExtractorService {
 
     private static final TField HTML_DATA_FIELD_DESC = new TField("html_data", TType.STRING, (short)1);
     private static final TField ENCODING_FIELD_DESC = new TField("encoding", TType.STRING, (short)2);
+    private static final TField ETYPE_FIELD_DESC = new TField("etype", TType.I32, (short)3);
 
     private ByteBuffer html_data;
     private String encoding;
+    private ExtractorType etype;
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements TFieldIdEnum {
       HTML_DATA((short)1, "html_data"),
-      ENCODING((short)2, "encoding");
+      ENCODING((short)2, "encoding"),
+      /**
+       * 
+       * @see ExtractorType
+       */
+      ETYPE((short)3, "etype");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1684,6 +1799,8 @@ public class ExtractorService {
             return HTML_DATA;
           case 2: // ENCODING
             return ENCODING;
+          case 3: // ETYPE
+            return ETYPE;
           default:
             return null;
         }
@@ -1732,6 +1849,8 @@ public class ExtractorService {
           new FieldValueMetaData(TType.STRING)));
       tmpMap.put(_Fields.ENCODING, new FieldMetaData("encoding", TFieldRequirementType.DEFAULT, 
           new FieldValueMetaData(TType.STRING)));
+      tmpMap.put(_Fields.ETYPE, new FieldMetaData("etype", TFieldRequirementType.DEFAULT, 
+          new EnumMetaData(TType.ENUM, ExtractorType.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       FieldMetaData.addStructMetaDataMap(extract_binary_args.class, metaDataMap);
     }
@@ -1741,11 +1860,13 @@ public class ExtractorService {
 
     public extract_binary_args(
       ByteBuffer html_data,
-      String encoding)
+      String encoding,
+      ExtractorType etype)
     {
       this();
       this.html_data = html_data;
       this.encoding = encoding;
+      this.etype = etype;
     }
 
     /**
@@ -1759,6 +1880,9 @@ public class ExtractorService {
       if (other.isSetEncoding()) {
         this.encoding = other.encoding;
       }
+      if (other.isSetEtype()) {
+        this.etype = other.etype;
+      }
     }
 
     public extract_binary_args deepCopy() {
@@ -1769,6 +1893,7 @@ public class ExtractorService {
     public void clear() {
       this.html_data = null;
       this.encoding = null;
+      this.etype = null;
     }
 
     public byte[] getHtml_data() {
@@ -1826,6 +1951,37 @@ public class ExtractorService {
       }
     }
 
+    /**
+     * 
+     * @see ExtractorType
+     */
+    public ExtractorType getEtype() {
+      return this.etype;
+    }
+
+    /**
+     * 
+     * @see ExtractorType
+     */
+    public void setEtype(ExtractorType etype) {
+      this.etype = etype;
+    }
+
+    public void unsetEtype() {
+      this.etype = null;
+    }
+
+    /** Returns true if field etype is set (has been asigned a value) and false otherwise */
+    public boolean isSetEtype() {
+      return this.etype != null;
+    }
+
+    public void setEtypeIsSet(boolean value) {
+      if (!value) {
+        this.etype = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case HTML_DATA:
@@ -1844,6 +2000,14 @@ public class ExtractorService {
         }
         break;
 
+      case ETYPE:
+        if (value == null) {
+          unsetEtype();
+        } else {
+          setEtype((ExtractorType)value);
+        }
+        break;
+
       }
     }
 
@@ -1854,6 +2018,9 @@ public class ExtractorService {
 
       case ENCODING:
         return getEncoding();
+
+      case ETYPE:
+        return getEtype();
 
       }
       throw new IllegalStateException();
@@ -1870,6 +2037,8 @@ public class ExtractorService {
         return isSetHtml_data();
       case ENCODING:
         return isSetEncoding();
+      case ETYPE:
+        return isSetEtype();
       }
       throw new IllegalStateException();
     }
@@ -1902,6 +2071,15 @@ public class ExtractorService {
         if (!(this_present_encoding && that_present_encoding))
           return false;
         if (!this.encoding.equals(that.encoding))
+          return false;
+      }
+
+      boolean this_present_etype = true && this.isSetEtype();
+      boolean that_present_etype = true && that.isSetEtype();
+      if (this_present_etype || that_present_etype) {
+        if (!(this_present_etype && that_present_etype))
+          return false;
+        if (!this.etype.equals(that.etype))
           return false;
       }
 
@@ -1941,6 +2119,16 @@ public class ExtractorService {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetEtype()).compareTo(typedOther.isSetEtype());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetEtype()) {
+        lastComparison = TBaseHelper.compareTo(this.etype, typedOther.etype);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1972,6 +2160,13 @@ public class ExtractorService {
               TProtocolUtil.skip(iprot, field.type);
             }
             break;
+          case 3: // ETYPE
+            if (field.type == TType.I32) {
+              this.etype = ExtractorType.findByValue(iprot.readI32());
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
           default:
             TProtocolUtil.skip(iprot, field.type);
         }
@@ -1993,6 +2188,11 @@ public class ExtractorService {
       if (this.encoding != null) {
         oprot.writeFieldBegin(ENCODING_FIELD_DESC);
         oprot.writeString(this.encoding);
+        oprot.writeFieldEnd();
+      }
+      if (this.etype != null) {
+        oprot.writeFieldBegin(ETYPE_FIELD_DESC);
+        oprot.writeI32(this.etype.getValue());
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -2017,6 +2217,14 @@ public class ExtractorService {
         sb.append("null");
       } else {
         sb.append(this.encoding);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("etype:");
+      if (this.etype == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.etype);
       }
       first = false;
       sb.append(")");

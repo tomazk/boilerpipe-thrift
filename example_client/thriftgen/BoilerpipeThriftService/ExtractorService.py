@@ -23,18 +23,20 @@ class Iface:
     """
     pass
 
-  def extract_string(self, html_string):
+  def extract_string(self, html_string, etype):
     """
     Parameters:
      - html_string
+     - etype
     """
     pass
 
-  def extract_binary(self, html_data, encoding):
+  def extract_binary(self, html_data, encoding, etype):
     """
     Parameters:
      - html_data
      - encoding
+     - etype
     """
     pass
 
@@ -76,18 +78,20 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "ping failed: unknown result");
 
-  def extract_string(self, html_string):
+  def extract_string(self, html_string, etype):
     """
     Parameters:
      - html_string
+     - etype
     """
-    self.send_extract_string(html_string)
+    self.send_extract_string(html_string, etype)
     return self.recv_extract_string()
 
-  def send_extract_string(self, html_string):
+  def send_extract_string(self, html_string, etype):
     self._oprot.writeMessageBegin('extract_string', TMessageType.CALL, self._seqid)
     args = extract_string_args()
     args.html_string = html_string
+    args.etype = etype
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -108,20 +112,22 @@ class Client(Iface):
       raise result.e
     raise TApplicationException(TApplicationException.MISSING_RESULT, "extract_string failed: unknown result");
 
-  def extract_binary(self, html_data, encoding):
+  def extract_binary(self, html_data, encoding, etype):
     """
     Parameters:
      - html_data
      - encoding
+     - etype
     """
-    self.send_extract_binary(html_data, encoding)
+    self.send_extract_binary(html_data, encoding, etype)
     return self.recv_extract_binary()
 
-  def send_extract_binary(self, html_data, encoding):
+  def send_extract_binary(self, html_data, encoding, etype):
     self._oprot.writeMessageBegin('extract_binary', TMessageType.CALL, self._seqid)
     args = extract_binary_args()
     args.html_data = html_data
     args.encoding = encoding
+    args.etype = etype
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -183,7 +189,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = extract_string_result()
     try:
-      result.success = self._handler.extract_string(args.html_string)
+      result.success = self._handler.extract_string(args.html_string, args.etype)
     except ExtractorException, e:
       result.e = e
     oprot.writeMessageBegin("extract_string", TMessageType.REPLY, seqid)
@@ -197,7 +203,7 @@ class Processor(Iface, TProcessor):
     iprot.readMessageEnd()
     result = extract_binary_result()
     try:
-      result.success = self._handler.extract_binary(args.html_data, args.encoding)
+      result.success = self._handler.extract_binary(args.html_data, args.encoding, args.etype)
     except ExtractorException, e:
       result.e = e
     oprot.writeMessageBegin("extract_binary", TMessageType.REPLY, seqid)
@@ -329,15 +335,18 @@ class extract_string_args:
   """
   Attributes:
    - html_string
+   - etype
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'html_string', None, None, ), # 1
+    (2, TType.I32, 'etype', None, None, ), # 2
   )
 
-  def __init__(self, html_string=None,):
+  def __init__(self, html_string=None, etype=None,):
     self.html_string = html_string
+    self.etype = etype
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -353,6 +362,11 @@ class extract_string_args:
           self.html_string = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.etype = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -366,6 +380,10 @@ class extract_string_args:
     if self.html_string != None:
       oprot.writeFieldBegin('html_string', TType.STRING, 1)
       oprot.writeString(self.html_string.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.etype != None:
+      oprot.writeFieldBegin('etype', TType.I32, 2)
+      oprot.writeI32(self.etype)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -460,17 +478,20 @@ class extract_binary_args:
   Attributes:
    - html_data
    - encoding
+   - etype
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'html_data', None, None, ), # 1
     (2, TType.STRING, 'encoding', None, None, ), # 2
+    (3, TType.I32, 'etype', None, None, ), # 3
   )
 
-  def __init__(self, html_data=None, encoding=None,):
+  def __init__(self, html_data=None, encoding=None, etype=None,):
     self.html_data = html_data
     self.encoding = encoding
+    self.etype = etype
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -491,6 +512,11 @@ class extract_binary_args:
           self.encoding = iprot.readString().decode('utf-8')
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.etype = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -508,6 +534,10 @@ class extract_binary_args:
     if self.encoding != None:
       oprot.writeFieldBegin('encoding', TType.STRING, 2)
       oprot.writeString(self.encoding.encode('utf-8'))
+      oprot.writeFieldEnd()
+    if self.etype != None:
+      oprot.writeFieldBegin('etype', TType.I32, 3)
+      oprot.writeI32(self.etype)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
