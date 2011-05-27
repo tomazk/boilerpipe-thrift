@@ -1,0 +1,154 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.tomazkovacic</groupId>
+  <artifactId>boilerpipe-thrift</artifactId>
+  <version>0.0.1</version>
+  <packaging>jar</packaging>
+
+  <name>boilerpipe-thrift</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <thrift.exe>/usr/local/bin/thrift</thrift.exe>
+    <thrift.interface>${basedir}/thrift/BoilerpipeService.thrift</thrift.interface>
+    <gendir.target>${basedir}/target/generated-sources</gendir.target>
+    <gendir.namespace>com/tomazkovacic/boilerpipe/thrift/gen</gendir.namespace>
+    <gendir.src>${basedir}/src/main/java/com/tomazkovacic/boilerpipe/thrift/gen</gendir.src>
+  </properties>
+
+  
+  <build>
+      <plugins>
+          <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <version>1.6</version>
+              <configuration></configuration>
+            <executions>
+                <execution>
+                    <id>generate-sources</id>
+                    <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <echo>
+                                    create (or clear) output directory for generated files
+                                </echo> 
+                                <mkdir dir="${gendir.target}" />
+                                <delete>
+                                    <fileset dir="${gendir.target}" includes="**/*" />
+                                </delete>
+                                
+                                <echo>
+                                    generate java source files from ${thrift.interface}
+                                </echo>
+                                <exec executable="${thrift.exe}">
+								  <arg value="-v"/>
+                                  <arg value="--gen" />
+                                  <arg value="java:beans"/>
+                                  <arg value="-o"/>
+                                  <arg value="${gendir.target}"/>
+                                  <arg value="${thrift.interface}"/>
+                                </exec>
+                                
+                                <echo>
+                                    copy generated files to ${gendir.src}
+                                </echo>
+                                <mkdir dir="${gendir.src}" />
+                                <delete>
+                                  <fileset dir="${gendir.src}" includes="**/*"/>
+                                </delete>
+                                <copy todir="${gendir.src}">
+                                  <fileset dir="target/generated-sources/gen-javabean/${gendir.namespace}"/>
+                                </copy>
+
+                            </target>
+                        </configuration>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                </execution>
+            </executions>
+          </plugin>
+        
+        
+        <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-compiler-plugin</artifactId>
+           <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+           </configuration>
+        </plugin>
+
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.2</version>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>2.2-beta-4</version>
+			<configuration>
+			  <descriptorRefs>
+			    <descriptorRef>jar-with-dependencies</descriptorRef>
+			  </descriptorRefs>
+			  <archive>
+			    <manifest>
+			      <mainClass>com.tomazkovacic.boilerpipe.thrift.Server</mainClass>
+			    </manifest>
+			  </archive>
+			</configuration>
+			<executions>
+			  <execution>
+			    <phase>package</phase>
+			    <goals>
+			      <goal>single</goal>
+			    </goals>
+			  </execution>
+			</executions>
+		</plugin>
+			
+		  </plugins>
+		</build>
+  
+  
+  <dependencies>
+    <dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>3.8.1</version>
+		<scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.thrift</groupId>
+        <artifactId>libfb303</artifactId>
+        <version>0.6.1</version>
+        <type>pom</type>
+    </dependency>
+    <dependency>
+    	<groupId>de.l3s.boilerpipe</groupId>
+    	<artifactId>boilerpipe</artifactId>
+    	<version>1.1.0</version>
+    </dependency>
+	<dependency>
+	    <groupId>commons-cli</groupId>
+	    <artifactId>commons-cli</artifactId>
+	    <version>1.2</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging</artifactId>
+		<version>1.1.1</version>
+	</dependency>
+	<dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.14</version>
+    </dependency>
+
+
+  </dependencies>
+</project>
