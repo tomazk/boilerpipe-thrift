@@ -22,6 +22,10 @@ try:
     with open("example_document.html",'r') as f:
         p = client.extract_string(unicode(f.read(), 'utf8','ignore'), ttypes.ExtractorType.DEFAULT);
         print p
+        
+    with open("example_document.html",'r') as f:
+        p = client.extract_binary( unicode(f.read(), 'utf8','ignore').encode('utf8'),'utf8', ttypes.ExtractorType.DEFAULT);
+        print p
    
     transport.close()
     
