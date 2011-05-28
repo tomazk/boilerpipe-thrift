@@ -18,7 +18,7 @@ import junit.framework.TestSuite;
 import com.tomazkovacic.boilerpipe.thrift.ServerSettings;
 
 public class ServerSettingsTest extends TestCase {
-	
+    
     /**
      * Create the test case
      *
@@ -36,104 +36,104 @@ public class ServerSettingsTest extends TestCase {
     {
         return new TestSuite( ServerSettingsTest.class );
     }
-	
+    
     private ServerSettings getSettingsInstance(String[] args){
-    	ServerSettings s = null;
-    	try {
-			s = ServerSettings.parseArgs(args);
-    	} catch (ParseException e) {
-			e.printStackTrace();
-			fail();
-		}
-    	return s;
+        ServerSettings s = null;
+        try {
+            s = ServerSettings.parseArgs(args);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            fail();
+        }
+        return s;
     }
     
     public void testPort(){
-    	ServerSettings s =  getSettingsInstance(new String[]{"","-p","9090"});
-    	assertEquals(s.getListeningPort(), 9090);
+        ServerSettings s =  getSettingsInstance(new String[]{"","-p","9090"});
+        assertEquals(s.getListeningPort(), 9090);
 
     }
     
     public void testDefaultPort(){
-		ServerSettings s = getSettingsInstance(new String[]{"",});
-		assertEquals(s.getListeningPort(), ServerSettings.DEFAULT_PORT);
+        ServerSettings s = getSettingsInstance(new String[]{"",});
+        assertEquals(s.getListeningPort(), ServerSettings.DEFAULT_PORT);
     }
     
     
     public void testFalsePort(){
-    	ServerSettings s = getSettingsInstance(new String[]{"","-p","a"});
-		assertEquals(s.getListeningPort(), ServerSettings.DEFAULT_PORT);
+        ServerSettings s = getSettingsInstance(new String[]{"","-p","a"});
+        assertEquals(s.getListeningPort(), ServerSettings.DEFAULT_PORT);
     }
     
     public void testProtocolFactory(){
-    	
-		{
-			ServerSettings s =getSettingsInstance(new String[]{"","-c"});
-			TProtocolFactory factory = s.getProtocolFactory();
-			Class c1 = factory.getClass().getEnclosingClass();
-			assertEquals(c1, TCompactProtocol.class);
-		}
-		
-		{
-			ServerSettings s =getSettingsInstance(new String[]{"",});
-			TProtocolFactory factory = s.getProtocolFactory();
-			Class c1 = factory.getClass().getEnclosingClass();
-			assertEquals(c1, TBinaryProtocol.class);
-		}
+        
+        {
+            ServerSettings s =getSettingsInstance(new String[]{"","-c"});
+            TProtocolFactory factory = s.getProtocolFactory();
+            Class c1 = factory.getClass().getEnclosingClass();
+            assertEquals(c1, TCompactProtocol.class);
+        }
+        
+        {
+            ServerSettings s =getSettingsInstance(new String[]{"",});
+            TProtocolFactory factory = s.getProtocolFactory();
+            Class c1 = factory.getClass().getEnclosingClass();
+            assertEquals(c1, TBinaryProtocol.class);
+        }
     }
     
     public void testTransportFactory(){
-    	
-		{
-			ServerSettings s =getSettingsInstance(new String[]{"","-f"});
-			TTransportFactory factory = s.getTransportFactory();
-			Class c1 = factory.getClass().getEnclosingClass();
-			if (c1 != null){				
-				assertEquals(c1, TFramedTransport.class);
-			}
-			else{
-				fail();
-			}
-		}
-		{
-			ServerSettings s =getSettingsInstance(new String[]{"","-hsha"});
-			TTransportFactory factory = s.getTransportFactory();
-			Class c1 = factory.getClass().getEnclosingClass();
-			if (c1 != null){				
-				assertEquals(c1, TFramedTransport.class);
-			}
-			else{
-				fail();
-			}
-		}
-		
-		{
-			ServerSettings s =getSettingsInstance(new String[]{"","-nonblocking"});
-			TTransportFactory factory = s.getTransportFactory();
-			Class c1 = factory.getClass().getEnclosingClass();
-			if (c1 != null){				
-				assertEquals(c1, TFramedTransport.class);
-			}
-			else{
-				fail();
-			}
-		}
-		
-		{
-			ServerSettings s =getSettingsInstance(new String[]{"",});
-			TTransportFactory factory = s.getTransportFactory();
-			Class c1 = factory.getClass();
-			if(c1.getEnclosingClass() != null){
-				fail();
-			}	
-			assertEquals(c1, TTransportFactory.class);
-		}
+        
+        {
+            ServerSettings s =getSettingsInstance(new String[]{"","-f"});
+            TTransportFactory factory = s.getTransportFactory();
+            Class c1 = factory.getClass().getEnclosingClass();
+            if (c1 != null){                
+                assertEquals(c1, TFramedTransport.class);
+            }
+            else{
+                fail();
+            }
+        }
+        {
+            ServerSettings s =getSettingsInstance(new String[]{"","-hsha"});
+            TTransportFactory factory = s.getTransportFactory();
+            Class c1 = factory.getClass().getEnclosingClass();
+            if (c1 != null){                
+                assertEquals(c1, TFramedTransport.class);
+            }
+            else{
+                fail();
+            }
+        }
+        
+        {
+            ServerSettings s =getSettingsInstance(new String[]{"","-nonblocking"});
+            TTransportFactory factory = s.getTransportFactory();
+            Class c1 = factory.getClass().getEnclosingClass();
+            if (c1 != null){                
+                assertEquals(c1, TFramedTransport.class);
+            }
+            else{
+                fail();
+            }
+        }
+        
+        {
+            ServerSettings s =getSettingsInstance(new String[]{"",});
+            TTransportFactory factory = s.getTransportFactory();
+            Class c1 = factory.getClass();
+            if(c1.getEnclosingClass() != null){
+                fail();
+            }    
+            assertEquals(c1, TTransportFactory.class);
+        }
     } 
     
     public void testHelp(){
-    	ServerSettings s =getSettingsInstance(new String[]{"",});
-    	s.printHelp();
-    	
+        ServerSettings s =getSettingsInstance(new String[]{"",});
+        s.printHelp();
+        
     }
     
  

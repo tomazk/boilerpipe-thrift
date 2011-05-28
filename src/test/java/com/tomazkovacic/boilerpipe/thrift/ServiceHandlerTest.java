@@ -35,51 +35,51 @@ public class ServiceHandlerTest extends TestCase {
 
     private ServiceHandler handler;
     
-	public void setUp(){
-		handler = new ServiceHandler();
-	}
+    public void setUp(){
+        handler = new ServiceHandler();
+    }
     
     public void testPing(){
 
-    	try {
-			assertEquals(handler.ping(""), "pong");
-		} catch (TException e) {
-			e.printStackTrace();
-			fail();
-		}
+        try {
+            assertEquals(handler.ping(""), "pong");
+        } catch (TException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
     
     public void testExtractStringSimple(){
-    	try {
-			String result = handler.extract_string("<html><body><p>this is some text</p></body></html>", ExtractorType.DEBUG);
-			assertTrue(result.startsWith("this is"));
-			
-		} catch (ExtractorException e) {
-			e.printStackTrace();
-			fail();
-		} catch (TException e) {
-			e.printStackTrace();
-			fail();
-		}
+        try {
+            String result = handler.extract_string("<html><body><p>this is some text</p></body></html>", ExtractorType.DEBUG);
+            assertTrue(result.startsWith("this is"));
+            
+        } catch (ExtractorException e) {
+            e.printStackTrace();
+            fail();
+        } catch (TException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
     
     public void testExtractBinarySimple(){
-    	try {
-    		String html = "<html><body><p>thiššššš is some text</p></body></html>";
-    		byte [] htmlBinary = html.getBytes("utf8");
-			String result = handler.extract_binary(ByteBuffer.wrap(htmlBinary), "utf8", ExtractorType.DEBUG);
-			assertTrue(result.startsWith("thiššššš is"));
-			
-		} catch (ExtractorException e) {
-			e.printStackTrace();
-			fail();
-		} catch (TException e) {
-			e.printStackTrace();
-			fail();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail();
-		}
+        try {
+            String html = "<html><body><p>thiššššš is some text</p></body></html>";
+            byte [] htmlBinary = html.getBytes("utf8");
+            String result = handler.extract_binary(ByteBuffer.wrap(htmlBinary), "utf8", ExtractorType.DEBUG);
+            assertTrue(result.startsWith("thiššššš is"));
+            
+        } catch (ExtractorException e) {
+            e.printStackTrace();
+            fail();
+        } catch (TException e) {
+            e.printStackTrace();
+            fail();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 
 }
