@@ -19,7 +19,7 @@ import de.l3s.boilerpipe.extractors.KeepEverythingExtractor;
 public class ServiceHandler 
 implements com.tomazkovacic.boilerpipe.thrift.gen.ExtractorService.Iface
 {
-	public static Log LOG = LogFactory.getLog(ServerSettings.class);
+	private static Log LOG = LogFactory.getLog(ServerSettings.class);
 
 	/**
 	 * Get extractor instance based on the enum selector
@@ -42,9 +42,7 @@ implements com.tomazkovacic.boilerpipe.thrift.gen.ExtractorService.Iface
 			case DEBUG: 
 				extractor = KeepEverythingExtractor.INSTANCE;
 			break;
-		
 		}
-
 		return extractor;
 	}
 	
@@ -83,7 +81,6 @@ implements com.tomazkovacic.boilerpipe.thrift.gen.ExtractorService.Iface
 	 * Debugging utility
 	 * */
 	public String ping(String input) throws TException {
-		// TODO Auto-generated method stub
 		return "pong";
 	}
 

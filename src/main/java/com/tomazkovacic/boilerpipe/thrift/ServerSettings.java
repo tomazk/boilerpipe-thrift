@@ -29,7 +29,7 @@ import org.apache.thrift.transport.TTransportFactory;
  * */
 public class ServerSettings{
 	
-	public static Log LOG = LogFactory.getLog(ServerSettings.class);
+	private static Log LOG = LogFactory.getLog(ServerSettings.class);
 	
 	/**
 	 * Default listening port
@@ -99,14 +99,13 @@ public class ServerSettings{
 		int port;
         try {
             port =  Integer.parseInt(cmd.getOptionValue("port"));
-            LOG.info("listening to port:" + Integer.toString(port) );
         } catch (NumberFormatException e) {
-            LOG.error("Could not parse the value provided for the port option," +
-            		  " listening to the default port value instead " +
-            		  "(port:" + Integer.toString(DEFAULT_PORT) +")",e);
+            LOG.warn("Could not parse the value provided for the port option," +
+            		  " listening to the default port value instead ");
             port = DEFAULT_PORT;
         }
 		
+        LOG.info("listening to port:" + Integer.toString(port) );
 		return port;
 	}
 	
@@ -118,11 +117,11 @@ public class ServerSettings{
 	 * */
 	public TProtocolFactory getProtocolFactory(){
 		if(cmd.hasOption("compact")){
-			LOG.debug("Using compact protocol");
+			LOG.info("Using compact protocol");
 			return new TCompactProtocol.Factory();
 		}
 		else{
-            LOG.debug("Using binary protocol");
+            LOG.info("Using binary protocol");
             return new TBinaryProtocol.Factory();
 		}
 	}
@@ -137,11 +136,11 @@ public class ServerSettings{
 	 * */
 	public TTransportFactory getTransportFactory(){
 		if (cmd.hasOption("nonblocking") || cmd.hasOption("hsha") || cmd.hasOption("framed")){
-			LOG.debug("Using framed transport");
+			LOG.info("Using framed transport");
 			return new TFramedTransport.Factory();
 		}
 		else {
-			LOG.debug("Using server dependant transport");
+			LOG.info("Using server dependant transport");
 			return new TTransportFactory();
 		}
 	}
@@ -156,15 +155,14 @@ public class ServerSettings{
 	public TServerTransport getServerTransport() throws TTransportException{
 		int port = getListeningPort();
 		if (cmd.hasOption("nonblocking") || cmd.hasOption("hsha")){
-			LOG.debug("Using non blocking server socket on port "+ Integer.toString(port));
+			LOG.info("Using non blocking server socket on port "+ Integer.toString(port));
 			return new TNonblockingServerSocket(port);
 		}
 		else{
-			LOG.debug("Using server scoket on port "+ Integer.toString(port));
+			LOG.info("Using server socket on port "+ Integer.toString(port));
 			return new TServerSocket(port);
 		}		
 	}
-	
 	
 
 }

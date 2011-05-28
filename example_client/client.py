@@ -1,5 +1,5 @@
 from thrift.transport import TTransport, TSocket
-from thrift.protocol import TCompactProtocol
+from thrift.protocol import TBinaryProtocol
 from thrift import Thrift
 
 # this is the code thrift generates for us 
@@ -8,9 +8,9 @@ from thriftgen.BoilerpipeThriftService import ExtractorService
 from thriftgen.BoilerpipeThriftService import ttypes
 
 try:
-    transport = TSocket.TSocket('localhost',9988)
+    transport = TSocket.TSocket('localhost',9999)
     transport = TTransport.TFramedTransport(transport)
-    protocol = TCompactProtocol.TCompactProtocol(transport)
+    protocol = TBinaryProtocol.TBinaryProtocol(transport)
     client = ExtractorService.Client(protocol)
     
     transport.open()
@@ -19,6 +19,9 @@ try:
     p = client.ping(unicode('PING')) # works
     print p # prints PONG
     
+    with open("example_document.html",'r') as f:
+        p = client.extract_string(unicode(f.read(), 'utf8','ignore'), ttypes.ExtractorType.DEFAULT);
+        print p
    
     transport.close()
     
