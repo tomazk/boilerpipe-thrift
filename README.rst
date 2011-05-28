@@ -107,7 +107,7 @@ This configuration mechanism currently supports (similar to the Hadoop HBase thr
 * framed transport
 * server dependent transport
 
-*Example:* to fire up a nonblocking server on port ``9988```using the required 
+*Example:* to fire up a nonblocking server on port ``9988`` using the required 
 framed transport, do
 
 ::
