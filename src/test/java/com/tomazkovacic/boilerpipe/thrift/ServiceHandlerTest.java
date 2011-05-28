@@ -1,5 +1,8 @@
 package com.tomazkovacic.boilerpipe.thrift;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+
 import org.apache.thrift.TException;
 
 import com.tomazkovacic.boilerpipe.thrift.gen.ExtractorException;
@@ -29,11 +32,12 @@ public class ServiceHandlerTest extends TestCase {
         return new TestSuite( ServiceHandlerTest.class );
     }
     
+
     private ServiceHandler handler;
     
-    public void setUp(){
-    	handler = new ServiceHandler();
-    }
+	public void setUp(){
+		handler = new ServiceHandler();
+	}
     
     public void testPing(){
 
@@ -47,8 +51,8 @@ public class ServiceHandlerTest extends TestCase {
     
     public void testExtractStringSimple(){
     	try {
-			String result = handler.extract_string("<html><body>this is some text</body></html>", ExtractorType.DEBUG);
-			assert result.matches("this is some text");
+			String result = handler.extract_string("<html><body><p>this is some text</p></body></html>", ExtractorType.DEBUG);
+			assertTrue(result.startsWith("this is"));
 			
 		} catch (ExtractorException e) {
 			e.printStackTrace();
@@ -57,8 +61,25 @@ public class ServiceHandlerTest extends TestCase {
 			e.printStackTrace();
 			fail();
 		}
-    	
-    	
+    }
+    
+    public void testExtractBinarySimple(){
+    	try {
+    		String html = "<html><body><p>thiššššš is some text</p></body></html>";
+    		byte [] htmlBinary = html.getBytes("utf8");
+			String result = handler.extract_binary(ByteBuffer.wrap(htmlBinary), "utf8", ExtractorType.DEBUG);
+			assertTrue(result.startsWith("thiššššš is"));
+			
+		} catch (ExtractorException e) {
+			e.printStackTrace();
+			fail();
+		} catch (TException e) {
+			e.printStackTrace();
+			fail();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			fail();
+		}
     }
 
 }
