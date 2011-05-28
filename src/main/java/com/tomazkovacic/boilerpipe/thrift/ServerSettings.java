@@ -51,7 +51,7 @@ public class ServerSettings{
 		Options options = new Options();
         //TODO: address binding
         //options.addOption("b","bind",true,"Address to bind the Thrift server to. Not supported by the Nonblocking and HsHa server [default: 0.0.0.0]");
-        options.addOption("p", "port", true, "Port to bind to [default: 9090]");
+        options.addOption("p", "port", true, "Port to bind to [default: 9999]");
         options.addOption("f", "framed", false, "Use framed transport");
         options.addOption("c", "compact", false, "Use the compact protocol");
         options.addOption("h", "help", false, "Print help information");
@@ -97,13 +97,19 @@ public class ServerSettings{
 	 * */
 	public int getListeningPort(){
 		int port;
-        try {
-            port =  Integer.parseInt(cmd.getOptionValue("port"));
-        } catch (NumberFormatException e) {
-            LOG.warn("Could not parse the value provided for the port option," +
-            		  " listening to the default port value instead ");
-            port = DEFAULT_PORT;
-        }
+		if(cmd.hasOption("port")){
+			
+			try {
+				port =  Integer.parseInt(cmd.getOptionValue("port"));
+			} catch (NumberFormatException e) {
+				LOG.warn("Could not parse the value provided for the port option," +
+				" listening to the default port value instead ");
+				port = DEFAULT_PORT;
+			}
+		}
+		else{
+			port = DEFAULT_PORT;
+		}
 		
         LOG.info("listening to port:" + Integer.toString(port) );
 		return port;
