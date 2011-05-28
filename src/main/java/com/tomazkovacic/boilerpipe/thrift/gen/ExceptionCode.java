@@ -13,7 +13,7 @@ import org.apache.thrift.TEnum;
 public enum ExceptionCode implements TEnum {
   PROCESSING(1),
   ENCODING(2),
-  UNKNOWN(3);
+  GENERIC(3);
 
   private final int value;
 
@@ -39,7 +39,7 @@ public enum ExceptionCode implements TEnum {
       case 2:
         return ENCODING;
       case 3:
-        return UNKNOWN;
+        return GENERIC;
       default:
         return null;
     }

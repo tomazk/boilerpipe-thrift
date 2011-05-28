@@ -4,7 +4,7 @@ namespace py BoilerpipeThriftService
 enum ExceptionCode{
     PROCESSING = 1,
     ENCODING = 2,
-    UNKNOWN = 3,
+    GENERIC = 3,
 }
 
 exception ExtractorException{

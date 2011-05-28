@@ -17,18 +17,18 @@ except:
 class ExceptionCode:
   PROCESSING = 1
   ENCODING = 2
-  UNKNOWN = 3
+  GENERIC = 3
 
   _VALUES_TO_NAMES = {
     1: "PROCESSING",
     2: "ENCODING",
-    3: "UNKNOWN",
+    3: "GENERIC",
   }
 
   _NAMES_TO_VALUES = {
     "PROCESSING": 1,
     "ENCODING": 2,
-    "UNKNOWN": 3,
+    "GENERIC": 3,
   }
 
 class ExtractorType:
