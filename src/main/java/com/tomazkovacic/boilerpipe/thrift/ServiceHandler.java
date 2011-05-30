@@ -20,6 +20,8 @@ import de.l3s.boilerpipe.extractors.ArticleExtractor;
 import de.l3s.boilerpipe.extractors.CanolaExtractor;
 import de.l3s.boilerpipe.extractors.DefaultExtractor;
 import de.l3s.boilerpipe.extractors.KeepEverythingExtractor;
+import de.l3s.boilerpipe.extractors.ArticleSentencesExtractor;
+
 
 public class ServiceHandler 
 implements com.tomazkovacic.boilerpipe.thrift.gen.ExtractorService.Iface
@@ -52,6 +54,10 @@ implements com.tomazkovacic.boilerpipe.thrift.gen.ExtractorService.Iface
                 
             case CANOLA: 
                 extractor = new CanolaExtractor();
+            break;
+            
+            case ARTICLE_SENTENCE:
+                extractor =  new ArticleSentencesExtractor();
             break;
                 
             case DEBUG: 

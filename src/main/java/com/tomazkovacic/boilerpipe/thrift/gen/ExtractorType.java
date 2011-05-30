@@ -14,7 +14,8 @@ public enum ExtractorType implements TEnum {
   DEFAULT(1),
   ARTICLE(2),
   CANOLA(3),
-  DEBUG(4);
+  ARTICLE_SENTENCE(4),
+  DEBUG(5);
 
   private final int value;
 
@@ -42,6 +43,8 @@ public enum ExtractorType implements TEnum {
       case 3:
         return CANOLA;
       case 4:
+        return ARTICLE_SENTENCE;
+      case 5:
         return DEBUG;
       default:
         return null;

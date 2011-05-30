@@ -17,7 +17,8 @@ enum ExtractorType{
     DEFAULT = 1,
     ARTICLE = 2,
     CANOLA = 3,
-    DEBUG = 4, // dummy keep everything extractor
+    ARTICLE_SENTENCE = 4,
+    DEBUG = 5, // dummy keep everything extractor
 }
 
 service ExtractorService{
