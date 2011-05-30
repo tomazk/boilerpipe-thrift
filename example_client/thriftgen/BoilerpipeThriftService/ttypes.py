@@ -35,20 +35,23 @@ class ExtractorType:
   DEFAULT = 1
   ARTICLE = 2
   CANOLA = 3
-  DEBUG = 4
+  ARTICLE_SENTENCE = 4
+  DEBUG = 5
 
   _VALUES_TO_NAMES = {
     1: "DEFAULT",
     2: "ARTICLE",
     3: "CANOLA",
-    4: "DEBUG",
+    4: "ARTICLE_SENTENCE",
+    5: "DEBUG",
   }
 
   _NAMES_TO_VALUES = {
     "DEFAULT": 1,
     "ARTICLE": 2,
     "CANOLA": 3,
-    "DEBUG": 4,
+    "ARTICLE_SENTENCE": 4,
+    "DEBUG": 5,
   }
 
 

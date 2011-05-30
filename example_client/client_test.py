@@ -109,6 +109,11 @@ class TestData(unittest.TestCase):
         result = self.client.extract_string(unicode(doc,'utf8','ignore'), ttypes.ExtractorType.CANOLA)
         print result[:300]
         
+    def test_article_sentence(self):
+        doc = get_data('2.html')
+        result = self.client.extract_string(unicode(doc,'utf8','ignore'), ttypes.ExtractorType.ARTICLE_SENTENCE)
+        print result[:300]
+        
     def test_failed_encoding(self):
         doc = get_data('2.html')
         try:
