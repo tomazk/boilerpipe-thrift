@@ -26,7 +26,7 @@ import de.l3s.boilerpipe.extractors.ArticleSentencesExtractor;
 public class ServiceHandler 
 implements com.tomazkovacic.boilerpipe.thrift.gen.ExtractorService.Iface
 {
-    private static Log LOG = LogFactory.getLog(ServerSettings.class);
+    private static Log LOG = LogFactory.getLog(ServiceHandler.class);
     
     /**
      * Get stack trace as a string
